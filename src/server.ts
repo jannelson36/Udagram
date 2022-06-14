@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Router, Request, Response, response } from "express";
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
@@ -33,7 +33,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   
   // Root Endpoint
   // Displays a simple message to the user
-  
+   
     app.get("/", async (req, res) => {
       res.send("Welcome to UDAGRAM Inc. Use the GET PATH to continue *GET PATH: //try GET /filteredimage?image_url={{}}");
       
@@ -42,13 +42,23 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   app.get("/filteredimage/", (req: Request, res: Response) => {
       let { image_url } = req.query;
       if (!image_url) {
-          return res.status(400).send(`Kindly input the image URL`);
+          return res.status(400).json
+          ({
+            status_code: 0,
+            error_msg: "Kindly input the image URL",
+          });
       } else {
           filterImageFromURL(image_url).then((response) => {
               res.sendFile(response);
               res.on("finish", function () {
                   deleteLocalFiles([response]);
-                  res.status(200).send("Image successfully retrieved.");
+                  res.status(200).json
+                  ({
+                    status_code: 1,
+                    error_msg: "Image successfully retrieved",
+                  });
+                  
+                  
               });
           });
       }
