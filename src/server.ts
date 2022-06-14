@@ -35,22 +35,24 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   // Displays a simple message to the user
    
     app.get("/", async (req, res) => {
-      res.send("Welcome to UDAGRAM Inc. Use the GET PATH to continue *GET PATH: //try GET /filteredimage?image_url={{}}");
-      
+      res.send("Welcome to UDAGRAM Inc. Use the GET PATH to continue *GET PATH: //try GET url/filteredimage?image_url={{}}");  
   });
 
   app.get("/filteredimage/", (req: Request, res: Response) => {
-      let { image_url } = req.query;
-      if (!image_url) {
+          let { image_url } = req.query;
+         
+          if (!image_url) {
           return res.status(400).json
           ({
             status_code: 0,
             error_msg: "Kindly input the image URL",
           });
-      } else {
+           }
+
+           else{
           filterImageFromURL(image_url).then((response) => {
               res.sendFile(response);
-              res.on("finish", function () {
+              res.on("done", function () {
                   deleteLocalFiles([response]);
                   res.status(200).json
                   ({
@@ -64,11 +66,6 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
       }
   });
 
-
-
-  app.get( "/", async ( req, res ) => {
-    res.send("try GET /filteredimage?image_url={{}}")
-  } );
   
 
   // Start the Server
